@@ -177,11 +177,16 @@ NOME_ARQUIVO_MODELO = 'modelo_fitopatologia_treinado.keras'
 if os.path.exists(NOME_ARQUIVO_MODELO) and not FORCAR_RETREINAMENTO:
     if EXIBIR_LOGS:
         print(f"Modelo pré-treinado localizado. Carregando pesos e arquitetura de: {NOME_ARQUIVO_MODELO}")
-
+    
     modelo_fitopatologia = tf.keras.models.load_model(NOME_ARQUIVO_MODELO)
 else:
     if EXIBIR_LOGS:
-        print("Modelo persistido não encontrado. Iniciando construção e treinamento de curta duração (3 épocas)...")
+        print("Modelo persistido não encontrado. Iniciando construção e treinamento ...")
+
+    aumento_dados = tf.keras.Sequential([
+        tf.keras.layers.RandomFlip("horizontal_and_vertical"),
+        tf.keras.layers.RandomRotation(0.2),
+    ])    
 
     modelo_base = MobileNetV2(
         input_shape=(224, 224, 3),
@@ -192,7 +197,8 @@ else:
     modelo_base.trainable = False
 
     entradas = tf.keras.Input(shape=(224, 224, 3))
-    x = tf.keras.applications.mobilenet_v2.preprocess_input(entradas)
+    x = aumento_dados(entradas)
+    x = tf.keras.applications.mobilenet_v2.preprocess_input(x)
     x = modelo_base(x, training=False)
     x = GlobalAveragePooling2D()(x)
     saidas = Dense(numero_classes, activation='softmax')(x)
@@ -208,11 +214,11 @@ else:
     historico = modelo_fitopatologia.fit(
         dataset_treino,
         validation_data=dataset_validacao,
-        epochs=10
+        epochs=12
     )
 
     modelo_fitopatologia.save(NOME_ARQUIVO_MODELO)
-
+    
     if EXIBIR_LOGS:
         print(f"Fase de aprendizado concluída. Modelo exportado com sucesso para: {NOME_ARQUIVO_MODELO}")
 
