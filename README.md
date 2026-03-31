@@ -51,6 +51,9 @@ O pipeline possui variáveis de controle de fácil acesso localizadas no primeir
   * `EXIBIR_LOGS = True`: Mantém o console informando cada passo do processamento de forma limpa e profissional, sem poluição visual.
   * `FORCAR_RETREINAMENTO = False`: O comportamento padrão é utilizar o modelo já treinado e salvo localmente. Se houver a necessidade de treinar a rede do zero para avaliar a curva de aprendizado, basta alterar este valor para `True`.
 
+## Apresentação Prática do Projeto
+[Apresentação em Vídeo](https://www.youtube.com/watch?v=pIZvNwrLszA&t=1s) | [Google Colab](https://colab.research.google.com/drive/1KvnH9AAkBo76m56HdPE2AFIMWslQUKx5?usp=sharing) 
+
 ## Autor
 
 **Rafael Novais de Miranda**
